@@ -18,4 +18,10 @@ import java.util.Objects;
 
 public class HomeController extends Controller {
 
+    public Result chat(){
+        return ok("Hello World");
+
+    }
 }
+
+
