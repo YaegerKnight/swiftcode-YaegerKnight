@@ -19,7 +19,7 @@ public class FeedService {
                     .setQueryParameter("query",query)
                     .setQueryParameter("output","rss")
                     .get();
-            //
+
             Document response = responsePromise.thenApply(WSResponse::asXml).toCompletableFuture().get();
             Node item = response.getFirstChild().getChildNodes().item(10);
             feedResponse.title = item.getChildNodes().item(0).getFirstChild().getNodeValue();
