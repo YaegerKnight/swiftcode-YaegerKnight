@@ -18,9 +18,13 @@ body {
 }
 
 .message-card {
-    max-width: 100%;
+    max-width: 70%;
     border-radius: 10px;
     padding: 10px;
     font-size: 14px;
     background-color: #9575cd;
+}
+
+.message-time {
+    font-size: 10px;
 }

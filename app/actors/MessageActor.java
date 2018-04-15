@@ -12,45 +12,48 @@ import services.NewsAgentService;
 
 import java.util.UUID;
 
-import static data.Message.Sender.BOT;
-import static data.Message.Sender.USER;
+public class MessageActor extends UntypedActor
+{
+   private final ActorRef out;
 
-public class MessageActor extends UntypedActor {
+   //Self reference the Actor
+   public MessageActor(ActorRef out)
+   {
+       //Define another actor Reference
+       this.out = out;
+   }
 
-    private final ActorRef out;
+   //PROPS
+   public static Props props(ActorRef out)
+   {
+       return Props.create(MessageActor.class, out);
+   }
 
-    //self reference to the actor
-    public MessageActor(ActorRef out) {
-        this.out = out;
-    }
+   //Object of FeedService
+   private FeedService feedService = new FeedService();
 
-    //define the props
-    public static Props props(ActorRef out) {
-        return Props.create(MessageActor.class, out);
-    }
+   //Object of NewsAgentService
+   private NewsAgentService newsAgentService = new NewsAgentService();
+   private NewsAgentResponse newsAgentResponse = new NewsAgentResponse();
+   @Override
+   public void onReceive(Object message) throws Throwable
+   {
+       // Send back the response
+       // create object of feedresponse,objectmapper,message
+       ObjectMapper objectMapper = new ObjectMapper();
+       Message messageObject = new Message();
+       if (message instanceof String)
+       {
 
-    private NewsAgentService newsAgentServiceObject = new NewsAgentService();
-    private FeedService feedServiceObject = new FeedService();
-
-    //define another actor reference
-
-    @Override
-    public void onReceive(Object message) throws Throwable {
-        ObjectMapper objectMapper = new ObjectMapper();
-        if (message instanceof String) {
-            Message messageObject = new Message();
-            messageObject.text = (String) message;
-            messageObject.sender = USER;
-            //to send the message received by the server to the client
-            out.tell(objectMapper.writeValueAsString(messageObject), self());
-
-            NewsAgentResponse newsAgentResponseObject = newsAgentServiceObject.getNewsAgentResponse(messageObject.text, UUID.randomUUID());
-            FeedResponse feedResponseObject = feedServiceObject.getFeedByQuery(newsAgentResponseObject.query);
-            messageObject.text = feedResponseObject.title == null ? "No results found" : "Showing results for:" + newsAgentResponseObject.query;
-            messageObject.feedResponse = feedResponseObject;
-            messageObject.sender = BOT;
-            out.tell(objectMapper.writeValueAsString(messageObject), self());
-        }
-    }
-
+           messageObject.text = (String)message;
+           messageObject.sender = Message.Sender.USER;
+           out.tell(objectMapper.writeValueAsString(messageObject), self());
+           String query = newsAgentService.getNewsAgentResponse("Find " + message, UUID.randomUUID()).query;
+           FeedResponse feedResponse = feedService.getFeedByQuery(query);
+           messageObject.text = (feedResponse.title == null) ? "No results found" : "Showing results for: " + query;
+           messageObject.feedResponse = feedResponse;
+           messageObject.sender = Message.Sender.BOT;
+           out.tell(objectMapper.writeValueAsString(messageObject), self());
+       }
+   }
 }
