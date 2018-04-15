@@ -22,6 +22,11 @@ public class HomeController extends Controller {
         return ok(chat.render());
 
     }
+
+    public LegacyWebSocket<String> chatSocket() {
+        // ::props implies that default property is set i.e no property
+        return WebSocket.withActor(MessageActor::props);
+    }
 }
 
 

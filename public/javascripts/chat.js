@@ -1,5 +1,11 @@
 var app = angular.module('chatApp', ['ngMaterial']);
 
+app.config(function ($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('red')
+        .accentPalette('red');
+});
+//https: //img.etimg.com/thumb/msid-62710870,width-640,resizemode-4,imgsize-216230/panigale-v4-price.jpg
 app.controller('chatController', function ($scope) {
     $scope.messages = [
         {

@@ -8,6 +8,9 @@ body {
 
 #message-pane {
     background-color: #673ab7;
+    background-image: url("https://img.etimg.com/thumb/msid-62710870,width-640,resizemode-4,imgsize-216230/panigale-v4-price.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
 }
 
 .material-icons {
